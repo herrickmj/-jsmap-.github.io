@@ -1,0 +1,138 @@
+echo "# -jsmap-.github.io" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/herrickmj/-jsmap-.github.io.git
+git push -u origin main
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fall Festival Map</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <style>
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Proposed Map for Fall Festival</h3>
+    <div id="map"></div>
+
+    <script>
+      function initMap() {
+        // Church building corners
+        const southCorner = { lat: 35.3715555, lng: -80.5539314 }; // South-facing corner
+        const westCorner = { lat: 35.3718765, lng: -80.5539941 };  // West-facing corner
+        const northCorner = { lat: 35.3720104, lng: -80.5532381 }; // North-facing corner
+        const eastCorner = { lat: 35.3717042, lng: -80.5530822 };  // East-facing corner
+
+        // Church driveway coordinates
+        const drivewayEntrance = { lat: 35.3726821, lng: -80.5535603 };  // Entrance from Highway 49
+        const drivewayTurn = { lat: 35.3723226, lng: -80.5534858 }; // Driveway begins a south turn
+        const drivewayEnd = { lat: 35.3719905, lng: -80.5539532 };  // Driveway ends near the building
+
+        // Parking locations (sample coordinates, replace with actual parking spots)
+        const parkingLocations = [
+          { lat: 35.371200, lng: -80.554500 }, // Example parking lot 1
+          { lat: 35.372000, lng: -80.553000 }, // Example parking lot 2
+        ];
+
+        // Map centered at the church (using an average of the four corners)
+        const mapCenter = {
+          lat: (southCorner.lat + westCorner.lat + northCorner.lat + eastCorner.lat) / 4,
+          lng: (southCorner.lng + westCorner.lng + northCorner.lng + eastCorner.lng) / 4,
+        };
+
+        const map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 18, // Close-up view to clearly see the church and surroundings
+          center: mapCenter,
+        });
+
+        // Add markers for church corners
+        const southMarker = new google.maps.Marker({
+          position: southCorner,
+          map: map,
+          title: 'South-facing Corner of Church',
+        });
+
+        const westMarker = new google.maps.Marker({
+          position: westCorner,
+          map: map,
+          title: 'West-facing Corner of Church',
+        });
+
+        const northMarker = new google.maps.Marker({
+          position: northCorner,
+          map: map,
+          title: 'North-facing Corner of Church',
+        });
+
+        const eastMarker = new google.maps.Marker({
+          position: eastCorner,
+          map: map,
+          title: 'East-facing Corner of Church',
+        });
+
+        // Add marker for driveway entrance
+        const drivewayMarker = new google.maps.Marker({
+          position: drivewayEntrance,
+          map: map,
+          title: 'Entrance to Church Driveway from Highway 49',
+          icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png', // Optional: green marker for entrance
+        });
+
+        // Add markers for parking areas
+        parkingLocations.forEach((location) => {
+          new google.maps.Marker({
+            position: location,
+            map: map,
+            title: 'Parking Area',
+          });
+        });
+
+        // Draw the driveway path using a polyline
+        const drivewayPath = new google.maps.Polyline({
+          path: [drivewayEntrance, drivewayTurn, drivewayEnd],  // Path from entrance to turning point to the driveway end
+          geodesic: true,
+          strokeColor: '#000000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        });
+        drivewayPath.setMap(map);
+
+        // Drawing a polygon to represent the complete outline of the church
+        const churchOutline = new google.maps.Polygon({
+          paths: [
+            southCorner,  // South-facing corner
+            westCorner,   // West-facing corner
+            { lat: 35.3718765, lng: -80.554370 }, // West rear corner
+            { lat: 35.3715555, lng: -80.554300 }, // South rear corner
+            northCorner,  // North-facing corner
+            eastCorner    // East-facing corner
+          ],
+          strokeColor: '#0000FF',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#0000FF',
+          fillOpacity: 0.35,
+        });
+        churchOutline.setMap(map);
+
+        // Drawing a circle to indicate the festival area
+        const festivalArea = new google.maps.Circle({
+          strokeColor: '#FF0000',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: '#FF0000',
+          fillOpacity: 0.35,
+          map: map,
+          center: mapCenter,
+          radius: 75, // Adjust radius to represent the festival area
+        });
+      }
+    </script>
+  </body>
+</html>
