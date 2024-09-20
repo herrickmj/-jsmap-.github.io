@@ -136,3 +136,8 @@ git push -u origin main
     </script>
   </body>
 </html>
+mv yourfile.html index.html
+git add index.html
+git commit -m "Rename to index.html"
+git push origin main
+
